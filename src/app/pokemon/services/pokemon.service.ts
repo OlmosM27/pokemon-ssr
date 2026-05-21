@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
-import { PokemonAPIResponse, SimplePokemon } from '../interfaces';
+import { Pokemon, PokemonAPIResponse, SimplePokemon } from '../interfaces';
 
 const MAX_ITEMS = 12;
 
@@ -34,5 +34,9 @@ export class PokemonService {
 
         // tap(console.log),
       );
+  }
+
+  public loadPokemon(id: string) {
+    return this.http.get<Pokemon>(`https://pokeapi.co/api/v2/pokemon/${id}`);
   }
 }
