@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { pokemonResolver } from './pokemon/resolvers/pokemon.resolver';
 
 export const routes: Routes = [
   {
@@ -12,6 +13,9 @@ export const routes: Routes = [
   {
     path: 'pokemon/:id',
     loadComponent: () => import('./pages/pokemon/pokemon-page.component'),
+    resolve: {
+      pokemon: pokemonResolver,
+    },
   },
   {
     path: 'pricing',
