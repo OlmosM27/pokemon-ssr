@@ -1,11 +1,12 @@
 import {
-  ApplicationRef,
   ChangeDetectionStrategy,
   Component,
   inject,
   OnInit,
+  PLATFORM_ID,
   signal,
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { PokemonList } from '../../pokemon/components/pokemon-list/pokemon-list';
 import { PokemonListSkeleton } from './ui/pokemon-list-skeleton/pokemon-list-skeleton';
 import { PokemonService } from '../../pokemon/services/pokemon.service';
@@ -26,6 +27,7 @@ export default class PokemonsPage implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private title = inject(Title);
+  private platformId = inject(PLATFORM_ID);
 
   public isLoading = signal(true);
   public pokemon = signal<SimplePokemon[]>([]);
@@ -37,19 +39,15 @@ export default class PokemonsPage implements OnInit {
     ),
   );
 
-  // private appRef = inject(ApplicationRef);
-
-  // private $appState = this.appRef.isStable.subscribe((isStable) => {
-  //   console.log({ isStable });
-  // });
-
   ngOnInit(): void {
-    console.log(this.currentPage());
-    // this.route.queryParamMap.subscribe(console.log);
     this.loadPokemon();
-    setTimeout(() => {
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+        this.isLoading.set(false);
+      }, 1500);
+    } else {
       this.isLoading.set(false);
-    }, 1500);
+    }
   }
 
   public loadPokemon(page = 0) {
