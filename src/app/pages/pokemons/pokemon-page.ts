@@ -41,25 +41,24 @@ export default class PokemonsPage implements OnInit {
 
   ngOnInit(): void {
     this.loadPokemon();
-    if (isPlatformBrowser(this.platformId)) {
-      setTimeout(() => {
-        this.isLoading.set(false);
-      }, 1500);
-    } else {
-      this.isLoading.set(false);
-    }
   }
 
   public loadPokemon(page = 0) {
     const pageToLoad = this.currentPage()! + page;
+    this.isLoading.set(true);
     this.pokemonService
       .loadPage(pageToLoad)
       .pipe(
-        tap(() => this.router.navigate([], { queryParams: { page: pageToLoad } })),
+        tap(() => {
+          if (isPlatformBrowser(this.platformId)) {
+            this.router.navigate([], { queryParams: { page: pageToLoad } });
+          }
+        }),
         tap(() => this.title.setTitle(`Pokemon SSR - Page ${pageToLoad}`)),
       )
       .subscribe((pokeList) => {
         this.pokemon.set(pokeList);
+        this.isLoading.set(false);
       });
   }
 }
