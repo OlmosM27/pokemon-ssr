@@ -1,7 +1,7 @@
 import { RenderMode, ServerRoute } from '@angular/ssr';
 
 const ITEMS_PER_PAGE = 12;
-const TOTAL_POKEMON = 151;
+const TOTAL_POKEMON = 24;
 
 export const serverRoutes: ServerRoute[] = [
   {
@@ -10,7 +10,13 @@ export const serverRoutes: ServerRoute[] = [
     getPrerenderParams: async () => {
       const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${TOTAL_POKEMON}`);
       const data = await res.json();
-      return data.results.map((p: { name: string }, i: number) => ({ id: String(i + 1) }));
+      const dataById = data.results.map((p: { name: string }, i: number) => ({
+        id: String(i + 1),
+      }));
+      const dataByName = data.results.map((p: { name: string }, i: number) => ({
+        id: String(p.name),
+      }));
+      return [...dataById, ...dataByName];
     },
   },
   {
